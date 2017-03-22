@@ -2,39 +2,15 @@ clear all;
 clc;
 close all;
 
-%f0 = 10e9;
-%c = 3*10e8;
-%lambda = c/f0;
-
-%alpha = deg2rad(-180:2:180);
-%beta = deg2rad(-90:2:90);
-
-%[alpha_m, beta_m] = meshgrid(alpha, beta);
-
-%F = abs(cos(alpha_m) .* 1);%ones(length(beta), 1) * (1 + cos(alpha - pi/2)).^2; 
-%[x, y, z] = sph2cart(beta_m, alpha_m, F);
-
-
-%figure(1);
-%surf(x,y,z);
-% xlabel('x'); 
-% ylabel('y'); 
-% zlabel('z');
-% minc = min([min(min(x)) min(min(y)) min(min(z))]);
-% maxc = max([max(max(x)) max(max(y)) max(max(z))]);
-% xlim([minc maxc]);
-% ylim([minc maxc]);
-% zlim([minc maxc]);
-
 %variant 11
 %lambda/4
-%snr = 10 db
+%nsr = 10 db
 %angle alpha = 45 grad
 %4 antennas
 
 lambda = 1/4;
-snr_db = 10;
-snr = 10^(snr_db/10);
+nsr_db = 50;
+nsr = 10^(nsr_db/10);
 
 a_step = 10;
 b_step = 10;
@@ -57,8 +33,6 @@ saveas(gcf, 'pic//basic_pattern', 'png');
 
 axis equal;
 clear F;
-%F = ones(length(b), 1)*(1 + cos(a - pi/2)).^2; 
-%F2 = F' * focus_vector(0,0,lambda)';
 
 F_square = ones(length(b), 1) * (1 + cos(a - pi/2)).^2;
 figure(2);
@@ -73,7 +47,7 @@ a_s = deg2rad(45);
 
 for a_j = deg2rad(0:a_step:180)
     fv = focus_vector(a_j, b_j, lambda);
-    D = snr * fv * fv' + eye(4);
+    D = nsr * fv * fv' + eye(4);
     fv_s = focus_vector(a_s, b_s, lambda);
     beta_w = D \ fv_s / (fv_s' * (D \ fv_s));
     
@@ -107,8 +81,5 @@ for a_j = deg2rad(0:a_step:180)
     s = sprintf('pic//DN_a_j_%03.0f.png', round(rad2deg(a_j)));
     saveas(gcf, s, 'png');
 end
-%figure(2);
-%surf(x, y, z);
-%axis equal;
 
 
